@@ -1,10 +1,10 @@
 import React from "react";
 import SignIn from "./SignIn";
 
-const AdminLogin = () => {
+const AdminLogin = ({ setIsLoggedIn }) => {
   return (
     <div>
-      <SignIn role={"Admin"} />
+      <SignIn role={"Admin"} setIsLoggedIn={setIsLoggedIn} />
     </div>
   );
 };

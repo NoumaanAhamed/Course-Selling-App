@@ -32,6 +32,10 @@ export default function MenuAppBar({ isLoggedIn, setIsLoggedIn }) {
     setAnchorEl(null);
   };
 
+  function userDetails() {
+    console.log("User Details....");
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -76,8 +80,7 @@ export default function MenuAppBar({ isLoggedIn, setIsLoggedIn }) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={userDetails}>My account</MenuItem>
                 <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
               </Menu>
             </div>

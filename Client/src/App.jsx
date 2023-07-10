@@ -7,6 +7,7 @@ import AdminLogin from "./Components/AdminLogin";
 import AdminSignup from "./Components/AdminSignup";
 import UserLogin from "./Components/UserLogin";
 import UserSignup from "./Components/UserSignup";
+import StickyFooter from "./Components/StickyFooter";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -17,18 +18,31 @@ function App() {
     if (token) {
       setIsLoggedIn(true);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <Router>
       <MenuAppBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />}></Route>
-        <Route path="/admin/signup" element={<AdminSignup />}></Route>
-        <Route path="/admin/login" element={<AdminLogin />}></Route>
-        <Route path="/users/signup" element={<UserSignup />}></Route>
-        <Route path="/users/login" element={<UserLogin />}></Route>
+        <Route
+          path="/admin/signup"
+          element={<AdminSignup setIsLoggedIn={setIsLoggedIn} />}
+        ></Route>
+        <Route
+          path="/admin/login"
+          element={<AdminLogin setIsLoggedIn={setIsLoggedIn} />}
+        ></Route>
+        <Route
+          path="/users/signup"
+          element={<UserSignup setIsLoggedIn={setIsLoggedIn} />}
+        ></Route>
+        <Route
+          path="/users/login"
+          element={<UserLogin setIsLoggedIn={setIsLoggedIn} />}
+        ></Route>
       </Routes>
+      <StickyFooter />
     </Router>
   );
 }

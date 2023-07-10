@@ -36,7 +36,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignUp({ role }) {
+export default function SignUp({ role, setIsLoggedIn }) {
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -58,6 +58,7 @@ export default function SignUp({ role }) {
         .then((res) => res.json())
         .then((data) => {
           localStorage.setItem("token", data.token);
+          setIsLoggedIn(true);
           console.log(data.message);
           navigate("/");
         });
@@ -75,6 +76,7 @@ export default function SignUp({ role }) {
         .then((res) => res.json())
         .then((data) => {
           localStorage.setItem("token", data.token);
+          setIsLoggedIn(true);
           console.log(data.message);
           navigate("/");
         });
