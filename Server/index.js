@@ -67,7 +67,7 @@ app.post("/admin/signup", (req, res) => {
 });
 
 //*Sign In
-app.post("/admin/signin", (req, res) => {
+app.post("/admin/login", (req, res) => {
   //TODO: Get Username and Password from user
   const { username, password } = req.body;
 
@@ -184,14 +184,117 @@ app.get("/admin/courses/:id", isAuthenticated, isAdmin, (req, res) => {
 //! User Routes
 
 //*Sign Up
+app.post("/users/signup", (req, res) => {
+  //TODO: Get Username and Password from user
+  const { username, password } = req.body;
+
+  //? Ensure Username and Password is not empty in Frontend/Backend
+
+  //? Check if User Already Exists
+
+  //?Encrypt Password
+
+  //TODO: Store the Data
+
+  USERS.push({
+    id: USERS.length + 1,
+    username,
+    password,
+    purchasedCourses: [],
+  });
+
+  //TODO: Create a Token with the data
+  const token = jwt.sign({ username, role: "User" }, secretOrPrivateKey, {
+    expiresIn: "1h",
+  });
+
+  //TODO: Send the Token to Authenticate
+  res.send({ message: "User created successfully", token });
+});
 
 //*Sign In
+app.post("/users/login", (req, res) => {
+  //TODO: Get Username and Password from user
+  const { username, password } = req.body;
+
+  //? Ensure Username and Password is not empty in Frontend/Backend
+
+  //TODO: Check if Username and Password matches
+
+  const reqUser = USERS.find((user) => {
+    return user.username === username && user.password === password;
+  });
+
+  if (!reqUser) {
+    return res.status(401).send({ message: "Incorrect Username or Password" });
+  }
+
+  //TODO: Create a Token with the data
+  const token = jwt.sign({ username, role: "User" }, secretOrPrivateKey, {
+    expiresIn: "1h",
+  });
+
+  //TODO: Send the Token to Authenticate
+  res.send({ message: "User LoggedIn successfully", token });
+});
 
 //*View Courses
+app.get("/users/courses", isAuthenticated, (req, res) => {
+  res.send({ Courses: COURSES });
+});
+
+//*View a Course
+app.get("/users/courses/:id", isAuthenticated, (req, res) => {
+  const { id } = req.params;
+
+  //TODO: Get the Course
+
+  const reqCourse = COURSES.find((course) => {
+    return course.id === parseInt(id);
+  });
+
+  //TODO: Send the Course
+
+  res.send({ currentCourse: reqCourse });
+});
 
 //*Purchase Courses
+app.post("/users/courses/:id", isAuthenticated, (req, res) => {
+  const { id } = req.params;
+
+  const { username } = req.data;
+
+  //?Find User Index and Whether User exists
+
+  const reqUserIndex = USERS.findIndex((user) => {
+    return user.username === username;
+  });
+
+  //?Find Course and Whether Course exists
+
+  const reqCourse = COURSES.find((course) => {
+    return course.id === parseInt(id);
+  });
+
+  USERS[reqUserIndex].purchasedCourses.push(reqCourse);
+
+  console.log(USERS);
+
+  res.send({ message: "Course Purchased Successfully" });
+});
 
 //*View Purchased Courses
+app.get("/users/purchasedCourses", isAuthenticated, (req, res) => {
+  //?Find User Index and Whether User exists
+
+  const { username } = req.data;
+
+  const reqUser = USERS.find((user) => {
+    return user.username === username;
+  });
+
+  res.send({ purchasedCourses: reqUser.purchasedCourses });
+});
 
 app.get("/", (req, res) => {
   res.send("Hello");
