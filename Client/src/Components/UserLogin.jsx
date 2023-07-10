@@ -4,7 +4,7 @@ import SignIn from "./SignIn";
 const UserLogin = () => {
   return (
     <div>
-      <SignIn />
+      <SignIn role={"User"} />
     </div>
   );
 };

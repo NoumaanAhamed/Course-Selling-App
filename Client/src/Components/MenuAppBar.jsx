@@ -6,21 +6,23 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 // import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Button from "@mui/material/Button";
 import BookIcon from "@mui/icons-material/Book";
+import { useNavigate } from "react-router-dom";
 
-export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState(true);
+export default function MenuAppBar({ isLoggedIn, setIsLoggedIn }) {
+  // const [auth, setAuth] = React.useState(true);
+
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
+  function handleLogOut() {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  }
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,18 +34,6 @@ export default function MenuAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={auth ? "Logout" : "Login"}
-        />
-      </FormGroup>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -58,7 +48,8 @@ export default function MenuAppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Sell-Courses
           </Typography>
-          {auth ? (
+          {/* {auth ? ( */}
+          {isLoggedIn ? (
             <div>
               <IconButton
                 size="large"
@@ -87,16 +78,37 @@ export default function MenuAppBar() {
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
               </Menu>
             </div>
           ) : (
+            <div>
+              <Button
+                onClick={() => navigate("/admin/signup")}
+                variant="contained"
+                style={{ margin: 10 }}
+              >
+                SIGN UP
+              </Button>
+              <Button
+                onClick={() => navigate("/admin/login")}
+                variant="contained"
+              >
+                SIGN IN
+              </Button>
+            </div>
+          )}
+
+          {/* ) :  */}
+          {/* (
             <div>
               <Button variant="contained" style={{ margin: 10 }}>
                 SIGN UP
               </Button>
               <Button variant="contained">SIGN IN</Button>
             </div>
-          )}
+          ) */}
+          {/* } */}
         </Toolbar>
       </AppBar>
     </Box>

@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -35,14 +36,46 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function SignIn({ role }) {
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    if (role === "Admin") {
+      fetch("http://localhost:3000/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: data.get("email"),
+          password: data.get("password"),
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          localStorage.setItem("token", data.token);
+          console.log(data.message);
+          navigate("/");
+        });
+    } else {
+      fetch("http://localhost:3000/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: data.get("email"),
+          password: data.get("password"),
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          localStorage.setItem("token", data.token);
+          console.log(data.message);
+          navigate("/");
+        });
+    }
   };
 
   return (
