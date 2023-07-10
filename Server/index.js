@@ -2,9 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 const USERS = [];
@@ -61,6 +63,8 @@ app.post("/admin/signup", (req, res) => {
   const token = jwt.sign({ username, role: "Admin" }, secretOrPrivateKey, {
     expiresIn: "1h",
   });
+
+  console.log(ADMINS);
 
   //TODO: Send the Token to Authenticate
   res.send({ message: "Admin created successfully", token });
@@ -207,6 +211,8 @@ app.post("/users/signup", (req, res) => {
   const token = jwt.sign({ username, role: "User" }, secretOrPrivateKey, {
     expiresIn: "1h",
   });
+
+  console.log(USERS);
 
   //TODO: Send the Token to Authenticate
   res.send({ message: "User created successfully", token });
