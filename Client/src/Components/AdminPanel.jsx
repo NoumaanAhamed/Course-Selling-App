@@ -15,7 +15,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { TextField } from "@mui/material";
+import { Alert, AlertTitle, TextField } from "@mui/material";
+import FormDialog from "./DeletePopup";
 
 function Copyright() {
   return (
@@ -42,6 +43,8 @@ export default function Album() {
     imageLink: "",
     price: 0,
   });
+  const [addCard, setAddCard] = React.useState(false);
+  const [isCourseAdded, setIsCourseAdded] = React.useState(false);
 
   const fetchCourses = () => {
     fetch("http://localhost:3000/admin/courses", {
@@ -120,14 +123,51 @@ export default function Album() {
     });
   }
 
+  function handleAddCourse() {
+    fetch("http://localhost:3000/admin/courses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ ...editFormData }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+        setAddCard(false);
+        setIsCourseAdded(true);
+        setTimeout(() => {
+          setIsCourseAdded(false);
+        }, 3000);
+      });
+  }
+
   function deleteCourse(id) {
-    console.log(id);
+    // console.log(id);
+    fetch(`http://localhost:3000/admin/courses/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+      });
   }
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <main>
+        {isCourseAdded && (
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            Course Created Successfully — <strong>Check it out!</strong>
+          </Alert>
+        )}
         {/* Hero unit */}
         <Box
           sx={{
@@ -160,8 +200,70 @@ export default function Album() {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained">Add a New Course</Button>
+              <Button
+                onClick={() => {
+                  setAddCard(true);
+                }}
+                variant="contained"
+              >
+                Add a New Course
+              </Button>
             </Stack>
+            {addCard && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  margin: "0 2rem 2rem 2rem",
+                }}
+              >
+                <TextField
+                  id="outlined-basic"
+                  label="Title"
+                  variant="outlined"
+                  name="title"
+                  placeholder="title"
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Description"
+                  variant="outlined"
+                  name="description"
+                  placeholder="description"
+                  onChange={handleFormChange}
+                />
+
+                <TextField
+                  id="outlined-basic"
+                  label="ImageLink"
+                  variant="outlined"
+                  name="imageLink"
+                  placeholder="image"
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Price"
+                  variant="outlined"
+                  name="price"
+                  placeholder="price"
+                  onChange={handleFormChange}
+                />
+                <Button
+                  onClick={() => {
+                    setAddCard(false);
+                  }}
+                  variant="contained"
+                  color="error"
+                >
+                  Close
+                </Button>
+                <Button onClick={handleAddCourse} variant="contained">
+                  Add
+                </Button>
+              </div>
+            )}
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">
@@ -171,7 +273,7 @@ export default function Album() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                margin: "0 2rem 2rem 2rem",
+                margin: "0 4rem 4rem 4rem",
               }}
             >
               <TextField
@@ -252,8 +354,13 @@ export default function Album() {
                     <Button onClick={() => editCourse(card)} size="small">
                       Edit
                     </Button>
-                    <Button onClick={() => deleteCourse(card.id)} size="small">
-                      Delete
+                    {/* <FormDialog /> */}
+                    <Button
+                      onClick={() => deleteCourse(card.id)}
+                      size="small"
+                      color="error"
+                    >
+                      Remove
                     </Button>
                   </CardActions>
                 </Card>
@@ -263,7 +370,6 @@ export default function Album() {
         </Container>
       </main>
       {/* Footer */}
-
       {/* End footer */}
     </ThemeProvider>
   );
