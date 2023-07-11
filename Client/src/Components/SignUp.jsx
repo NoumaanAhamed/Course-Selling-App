@@ -60,7 +60,7 @@ export default function SignUp({ role, setIsLoggedIn }) {
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
           console.log(data.message);
-          navigate("/");
+          navigate("/admin");
         });
     } else {
       fetch("http://localhost:3000/users/signup", {
@@ -78,7 +78,7 @@ export default function SignUp({ role, setIsLoggedIn }) {
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
           console.log(data.message);
-          navigate("/");
+          navigate("/users");
         });
     }
 

@@ -321,7 +321,7 @@ export default function Album() {
               </Button>
             </div>
           )}
-          <Grid container spacing={4}>
+          {/* <Grid container spacing={4}>
             {console.log(cards)}
             {cards.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
@@ -331,8 +331,8 @@ export default function Album() {
                     display: "flex",
                     flexDirection: "column",
                   }}
-                >
-                  <CardMedia
+                > */}
+          {/* <CardMedia
                     component="div"
                     sx={{
                       // 16:9
@@ -353,9 +353,9 @@ export default function Album() {
                     </Button>
                     <Button onClick={() => editCourse(card)} size="small">
                       Edit
-                    </Button>
-                    {/* <FormDialog /> */}
-                    <Button
+                    </Button> */}
+          {/* <FormDialog /> */}
+          {/* <Button
                       onClick={() => deleteCourse(card.id)}
                       size="small"
                       color="error"
@@ -365,8 +365,8 @@ export default function Album() {
                   </CardActions>
                 </Card>
               </Grid>
-            ))}
-          </Grid>
+            ))} */}
+          {/* </Grid> */}
         </Container>
       </main>
       {/* Footer */}

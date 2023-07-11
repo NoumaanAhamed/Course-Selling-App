@@ -6,11 +6,12 @@ import "@fontsource/roboto/500.css";
 // import "@fontsource/roboto/700.css";
 import Album from "./AdminPanel";
 
-const HomePage = ({ isLoggedIn }) => {
+const UserHomePage = ({ isLoggedIn }) => {
   return (
     <Container maxWidth="lg">
       {isLoggedIn ? (
         <div>
+          Hello
           <Album></Album>
         </div>
       ) : (
@@ -21,7 +22,7 @@ const HomePage = ({ isLoggedIn }) => {
             textAlign={"center"}
             variant="h1"
           >
-            Welcome to Sell-Course
+            Welcome to Sell-Course!
           </Typography>
           <Typography m={5} textAlign={"center"} variant="h4">
             Your One Stop Place for Premium-Curated Courses
@@ -45,4 +46,4 @@ const HomePage = ({ isLoggedIn }) => {
   );
 };
 
-export default HomePage;
+export default UserHomePage;

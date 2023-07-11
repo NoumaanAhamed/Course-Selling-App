@@ -8,6 +8,7 @@ import AdminSignup from "./Components/AdminSignup";
 import UserLogin from "./Components/UserLogin";
 import UserSignup from "./Components/UserSignup";
 import StickyFooter from "./Components/StickyFooter";
+import UserHomePage from "./Components/UserHomePage";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -15,16 +16,38 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
+
+    function checkLoginStatus() {
+      fetch("http://localhost:3000/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => {
+        if (res.status == 200) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      });
     }
-  }, [isLoggedIn]);
+
+    if (token) {
+      checkLoginStatus();
+    }
+  }, []);
 
   return (
     <Router>
       <MenuAppBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
-        <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />}></Route>
+        <Route
+          path="/admin"
+          element={<HomePage isLoggedIn={isLoggedIn} />}
+        ></Route>
+        <Route
+          path="/users"
+          element={<UserHomePage isLoggedIn={isLoggedIn} />}
+        ></Route>
         <Route
           path="/admin/signup"
           element={<AdminSignup setIsLoggedIn={setIsLoggedIn} />}

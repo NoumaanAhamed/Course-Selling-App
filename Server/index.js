@@ -306,6 +306,10 @@ app.get("/", (req, res) => {
   res.send("Hello");
 });
 
+app.get("/profile", isAuthenticated, (req, res) => {
+  res.sendStatus(200);
+});
+
 app.listen(3000, () => {
   console.log("Listening....");
 });
