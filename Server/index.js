@@ -3,6 +3,48 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
+const mongoose = require("mongoose");
+
+
+const Schema = mongoose.Schema;
+// const ObjectId = Schema.ObjectId;
+
+const adminSchema = new Schema({
+  username: String,
+  password: String,
+});
+
+const userSchema = new Schema({
+  username: String,
+  password: String,
+  purchasedCourses : //
+});
+
+const courseSchema = new Schema({
+  title:String,
+  description:String,
+  price:Number,
+  imageLink:String,
+  published:Boolean
+})
+
+const User = mongoose.model('Users',userSchema);
+const Admin = mongoose.model('Admins',adminSchema);
+const Course = mongoose.model('Courses',courseSchema);
+
+mongoose
+  .connect(
+    "mongodb+srv://noumaanahamed:wasdijkl14145@course-selling-app.hpfwzko.mongodb.net/",
+    {
+      dbName: "Sell-Courses",
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
+  )
+  .then(() => {
+    console.log("Database Connected");
+  });
+
 
 const app = express();
 
