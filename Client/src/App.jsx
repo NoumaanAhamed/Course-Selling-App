@@ -9,6 +9,7 @@ import UserLogin from "./Components/UserLogin";
 import UserSignup from "./Components/UserSignup";
 import StickyFooter from "./Components/StickyFooter";
 import UserHomePage from "./Components/UserHomePage";
+import FrontPage from "./Components/FrontPage";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -40,6 +41,7 @@ function App() {
     <Router>
       <MenuAppBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
+        <Route path="/" element={<FrontPage />}></Route>
         <Route
           path="/admin"
           element={<HomePage isLoggedIn={isLoggedIn} />}

@@ -174,7 +174,14 @@ export default function SignUp({ role, setIsLoggedIn }) {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link
+                  onClick={() => {
+                    role === "Admin"
+                      ? navigate("/admin/login")
+                      : navigate("/users/login");
+                  }}
+                  variant="body2"
+                >
                   Already have an account? Sign in
                 </Link>
               </Grid>
