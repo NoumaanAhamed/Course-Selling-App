@@ -4,15 +4,14 @@ import React from "react";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 // import "@fontsource/roboto/700.css";
-import Album from "./AdminPanel";
+import UserAlbum from "./UserPanel";
 
 const UserHomePage = ({ isLoggedIn }) => {
   return (
     <Container maxWidth="lg">
       {isLoggedIn ? (
         <div>
-          Hello
-          <Album></Album>
+          <UserAlbum></UserAlbum>
         </div>
       ) : (
         <div>

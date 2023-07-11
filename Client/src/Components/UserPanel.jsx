@@ -34,7 +34,7 @@ function Copyright() {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Album() {
+export default function UserAlbum() {
   const [cards, setCards] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [editFormData, setEditFormData] = React.useState({
@@ -45,9 +45,11 @@ export default function Album() {
   });
   const [addCard, setAddCard] = React.useState(false);
   const [isCourseAdded, setIsCourseAdded] = React.useState(false);
+  const [toggleCourse, setToggleCourse] = React.useState(true);
+  const [purchasedCards, setPurchasedCards] = React.useState([]);
 
   const fetchCourses = () => {
-    fetch("http://localhost:3000/admin/courses", {
+    fetch("http://localhost:3000/users/courses", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -60,16 +62,48 @@ export default function Album() {
       });
   };
 
+  const fetchPurchasedCourses = () => {
+    fetch("http://localhost:3000/users/purchasedCourses", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(cards);
+        setPurchasedCards(data.purchasedCourses);
+      });
+  };
+
   React.useEffect(() => {
     fetchCourses();
+    fetchPurchasedCourses();
 
-    const interval = setInterval(fetchCourses, 5000); // Fetch every 5 seconds
+    const interval = setInterval(() => {
+      fetchCourses();
+      fetchPurchasedCourses();
+    }, 5000); // Fetch every 5 seconds
 
     return () => clearInterval(interval); // Clean up the interval on component unmount
   }, []);
 
   function viewCourse(id) {
     console.log(id);
+  }
+
+  function purchaseCourse(id) {
+    fetch(`http://localhost:3000/users/courses/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+      });
   }
 
   function editCourse(card) {
@@ -93,7 +127,7 @@ export default function Album() {
     fetch(`http://localhost:3000/admin/courses/${selectedCard.id}`, {
       method: "PUT",
       headers: {
-        "COntent-Type": "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ ...editFormData }),
@@ -192,7 +226,7 @@ export default function Album() {
               color="text.secondary"
               paragraph
             >
-              Manage all the Courses Here.
+              View all the Courses Here.
             </Typography>
             <Stack
               sx={{ pt: 4 }}
@@ -202,11 +236,20 @@ export default function Album() {
             >
               <Button
                 onClick={() => {
-                  setAddCard(true);
+                  setToggleCourse(true);
                 }}
                 variant="contained"
               >
-                Add a New Course
+                Show All Courses
+              </Button>
+              <Button
+                onClick={() => {
+                  setToggleCourse(false);
+                }}
+                variant="contained"
+                color="success"
+              >
+                Show Purchased Courses
               </Button>
             </Stack>
             {addCard && (
@@ -321,52 +364,91 @@ export default function Album() {
               </Button>
             </div>
           )}
-          <Grid container spacing={4}>
-            {console.log(cards)}
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardMedia
-                    component="div"
+          {toggleCourse ? (
+            <Grid container spacing={4}>
+              {cards.map((card) => (
+                <Grid item key={card} xs={12} sm={6} md={4}>
+                  <Card
                     sx={{
-                      // 16:9
-                      pt: "56.25%",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
-                    image={card.imageLink}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {card.title}
-                    </Typography>
-                    <Typography>{card.description}</Typography>
-                    <Typography textAlign={"right"}>₹{card.price}</Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button onClick={() => viewCourse(card.id)} size="small">
-                      View
-                    </Button>
-                    <Button onClick={() => editCourse(card)} size="small">
-                      Edit
-                    </Button>
-                    {/* <FormDialog /> */}
-                    <Button
-                      onClick={() => deleteCourse(card.id)}
-                      size="small"
-                      color="error"
-                    >
-                      Remove
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                  >
+                    <CardMedia
+                      component="div"
+                      sx={{
+                        // 16:9
+                        pt: "56.25%",
+                      }}
+                      image={card.imageLink}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {card.title}
+                      </Typography>
+                      <Typography>{card.description}</Typography>
+                      <Typography textAlign={"right"}>₹{card.price}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button onClick={() => viewCourse(card.id)} size="small">
+                        View
+                      </Button>
+
+                      {/* <FormDialog /> */}
+                      <Button
+                        onClick={() => purchaseCourse(card.id)}
+                        size="small"
+                        color="success"
+                      >
+                        Purchase
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Grid container spacing={4}>
+              {purchasedCards.map((card) => (
+                <Grid item key={card} xs={12} sm={6} md={4}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardMedia
+                      component="div"
+                      sx={{
+                        // 16:9
+                        pt: "56.25%",
+                      }}
+                      image={card.imageLink}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        {card.title}
+                      </Typography>
+                      <Typography>{card.description}</Typography>
+                      <Typography textAlign={"right"}>₹{card.price}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      {/* <FormDialog /> */}
+                      <Button
+                        onClick={() => viewCourse(card.id)}
+                        size="small"
+                        color="success"
+                      >
+                        View
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </Container>
       </main>
       {/* Footer
