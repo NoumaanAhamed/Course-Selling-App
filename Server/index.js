@@ -322,7 +322,7 @@ app.get("/users/courses", isAuthenticated, async (req, res) => {
 
 //*View a Course
 app.get("/users/courses/:id", isAuthenticated, async (req, res) => {
-  //! Bug: View Course where Purcahsed is TRue
+  //! Bug: View Course where Purchased is TRue
 
   const { id } = req.params;
 

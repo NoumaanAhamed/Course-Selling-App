@@ -15,21 +15,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Alert, AlertTitle, TextField } from "@mui/material";
+import { Alert, AlertTitle, Snackbar, TextField } from "@mui/material";
 import FormDialog from "./DeletePopup";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -44,7 +31,15 @@ export default function Album() {
     price: 0,
   });
   const [addCard, setAddCard] = React.useState(false);
-  const [isCourseAdded, setIsCourseAdded] = React.useState(false);
+  const [statusMessage, setStatusMessage] = React.useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setStatusMessage("");
+  };
 
   const fetchCourses = () => {
     fetch("http://localhost:3000/admin/courses", {
@@ -100,9 +95,7 @@ export default function Album() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.message);
-        console.log(cards);
-
+        setStatusMessage("Course Updated Successfully");
         setSelectedCard(null);
         setEditFormData({
           title: "",
@@ -134,12 +127,12 @@ export default function Album() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.message);
+        // console.log(data.message);
         setAddCard(false);
-        setIsCourseAdded(true);
-        setTimeout(() => {
-          setIsCourseAdded(false);
-        }, 3000);
+        setStatusMessage("Course Created Successfully");
+        // setTimeout(() => {
+        //   setStatusMessage(false);
+        // }, 3000);
       });
   }
 
@@ -154,7 +147,8 @@ export default function Album() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.message);
+        setStatusMessage("Course Deleted Successfully");
+        // console.log(data.message);
       });
   }
 
@@ -162,11 +156,16 @@ export default function Album() {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <main>
-        {isCourseAdded && (
-          <Alert severity="success">
-            <AlertTitle>Success</AlertTitle>
-            Course Created Successfully — <strong>Check it out!</strong>
-          </Alert>
+        {statusMessage && (
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert
+              onClose={handleClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {statusMessage}
+            </Alert>
+          </Snackbar>
         )}
         {/* Hero unit */}
         <Box
@@ -322,7 +321,7 @@ export default function Album() {
             </div>
           )}
           <Grid container spacing={4}>
-            {console.log(cards)}
+            {/* {console.log(cards)} */}
             {cards.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
                 <Card

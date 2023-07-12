@@ -15,21 +15,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Alert, AlertTitle, TextField } from "@mui/material";
+import { Alert, AlertTitle, Snackbar, TextField } from "@mui/material";
 import FormDialog from "./DeletePopup";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -47,6 +34,15 @@ export default function UserAlbum() {
   const [isCourseAdded, setIsCourseAdded] = React.useState(false);
   const [toggleCourse, setToggleCourse] = React.useState(true);
   const [purchasedCards, setPurchasedCards] = React.useState([]);
+  const [statusMessage, setStatusMessage] = React.useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setStatusMessage("");
+  };
 
   const fetchCourses = () => {
     fetch("http://localhost:3000/users/courses", {
@@ -100,9 +96,16 @@ export default function UserAlbum() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 409) {
+          return setStatusMessage("Course Already Purchased");
+        }
+        return res.json();
+      })
       .then((data) => {
-        console.log(data.message);
+        if (!data) return;
+        // console.log(data.message);
+        setStatusMessage("Course Purchased Successfully");
       });
   }
 
@@ -177,30 +180,24 @@ export default function UserAlbum() {
       });
   }
 
-  function deleteCourse(id) {
-    // console.log(id);
-    fetch(`http://localhost:3000/admin/courses/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.message);
-      });
-  }
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <main>
-        {isCourseAdded && (
-          <Alert severity="success">
-            <AlertTitle>Success</AlertTitle>
-            Course Created Successfully — <strong>Check it out!</strong>
-          </Alert>
+        {statusMessage && (
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert
+              severity={
+                statusMessage === "Course Already Purchased"
+                  ? "error"
+                  : "success"
+              }
+              onClose={handleClose}
+              sx={{ width: "100%" }}
+            >
+              {statusMessage}
+            </Alert>
+          </Snackbar>
         )}
         {/* Hero unit */}
         <Box

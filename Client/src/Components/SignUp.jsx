@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { Snackbar } from "@mui/material";
 
 function Copyright(props) {
   return (
@@ -38,11 +39,15 @@ const defaultTheme = createTheme();
 
 export default function SignUp({ role, setIsLoggedIn }) {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
+    if (!data.get("email") || !data.get("password")) {
+      setErrorMessage("Missing Username or Password");
+      return;
+    }
     // return role === "Admin" ? console.log("hi") : console.log("hello");
     if (role === "Admin") {
       fetch("http://localhost:3000/admin/signup", {
@@ -55,8 +60,14 @@ export default function SignUp({ role, setIsLoggedIn }) {
           password: data.get("password"),
         }),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 409) {
+            return setErrorMessage("User already Exists, Please Login");
+          }
+          return res.json();
+        })
         .then((data) => {
+          if (!data) return;
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
           console.log(data.message);
@@ -73,8 +84,14 @@ export default function SignUp({ role, setIsLoggedIn }) {
           password: data.get("password"),
         }),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 409) {
+            return setErrorMessage("User already Exists, Please Login");
+          }
+          return res.json();
+        })
         .then((data) => {
+          if (!data) return;
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
           console.log(data.message);
@@ -156,6 +173,11 @@ export default function SignUp({ role, setIsLoggedIn }) {
                 />
               </Grid>
               <Grid item xs={12}>
+                {errorMessage && (
+                  <Typography variant="caption" color="error">
+                    {errorMessage}
+                  </Typography>
+                )}
                 <FormControlLabel
                   control={
                     <Checkbox value="allowExtraEmails" color="primary" />

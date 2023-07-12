@@ -37,10 +37,16 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn({ role, setIsLoggedIn }) {
+  const [errorMessage, setErrorMessage] = React.useState("");
+
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    if (!data.get("email") || !data.get("password")) {
+      setErrorMessage("Missing Username or Password");
+      return;
+    }
     if (role === "Admin") {
       fetch("http://localhost:3000/admin/login", {
         method: "POST",
@@ -52,8 +58,14 @@ export default function SignIn({ role, setIsLoggedIn }) {
           password: data.get("password"),
         }),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 401) {
+            return setErrorMessage("Incorrect Username or Password");
+          }
+          return res.json();
+        })
         .then((data) => {
+          if (!data) return;
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
           console.log(data.message);
@@ -70,8 +82,14 @@ export default function SignIn({ role, setIsLoggedIn }) {
           password: data.get("password"),
         }),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 401) {
+            return setErrorMessage("Incorrect Username or Password");
+          }
+          return res.json();
+        })
         .then((data) => {
+          if (!data) return;
           localStorage.setItem("token", data.token);
           setIsLoggedIn(true);
           console.log(data.message);
@@ -124,7 +142,16 @@ export default function SignIn({ role, setIsLoggedIn }) {
               id="password"
               autoComplete="current-password"
             />
+
+            {errorMessage && (
+              <Typography variant="caption" color="error">
+                {" "}
+                {errorMessage}
+              </Typography>
+            )}
+
             <FormControlLabel
+              sx={{ display: "block" }}
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
