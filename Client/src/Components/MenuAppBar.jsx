@@ -18,6 +18,20 @@ export default function MenuAppBar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [userProfile, setUserProfile] = React.useState(null);
+
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      fetch("http://localhost:3000/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setUserProfile(data.username));
+    }
+  }, [isLoggedIn]);
 
   function handleLogOut() {
     localStorage.removeItem("token");
@@ -64,6 +78,7 @@ export default function MenuAppBar({ isLoggedIn, setIsLoggedIn }) {
                 color="inherit"
               >
                 <AccountCircle />
+                <Typography sx={{ m: 1 }}> {userProfile} </Typography>
               </IconButton>
               <Menu
                 id="menu-appbar"

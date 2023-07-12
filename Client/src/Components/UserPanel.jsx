@@ -389,15 +389,18 @@ export default function UserAlbum() {
                       </Typography>
                       <Typography>{card.description}</Typography>
                       <Typography textAlign={"right"}>₹{card.price}</Typography>
+                      <Typography variant="caption">
+                        Created by {card.createdBy.username}
+                      </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button onClick={() => viewCourse(card.id)} size="small">
+                      <Button onClick={() => viewCourse(card._id)} size="small">
                         View
                       </Button>
 
                       {/* <FormDialog /> */}
                       <Button
-                        onClick={() => purchaseCourse(card.id)}
+                        onClick={() => purchaseCourse(card._id)}
                         size="small"
                         color="success"
                       >
@@ -437,7 +440,7 @@ export default function UserAlbum() {
                     <CardActions>
                       {/* <FormDialog /> */}
                       <Button
-                        onClick={() => viewCourse(card.id)}
+                        onClick={() => viewCourse(card._id)}
                         size="small"
                         color="success"
                       >

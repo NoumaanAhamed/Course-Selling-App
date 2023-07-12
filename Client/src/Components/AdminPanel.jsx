@@ -90,7 +90,7 @@ export default function Album() {
   }
 
   function handleFormSubmit() {
-    fetch(`http://localhost:3000/admin/courses/${selectedCard.id}`, {
+    fetch(`http://localhost:3000/admin/courses/${selectedCard._id}`, {
       method: "PUT",
       headers: {
         "COntent-Type": "application/json",
@@ -346,9 +346,12 @@ export default function Album() {
                     </Typography>
                     <Typography>{card.description}</Typography>
                     <Typography textAlign={"right"}>₹{card.price}</Typography>
+                    <Typography variant="caption">
+                      Created by {card.createdBy.username}
+                    </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button onClick={() => viewCourse(card.id)} size="small">
+                    <Button onClick={() => viewCourse(card._id)} size="small">
                       View
                     </Button>
                     <Button onClick={() => editCourse(card)} size="small">
@@ -356,7 +359,7 @@ export default function Album() {
                     </Button>
                     {/* <FormDialog /> */}
                     <Button
-                      onClick={() => deleteCourse(card.id)}
+                      onClick={() => deleteCourse(card._id)}
                       size="small"
                       color="error"
                     >

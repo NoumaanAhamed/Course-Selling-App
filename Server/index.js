@@ -315,7 +315,7 @@ app.post("/users/login", async (req, res) => {
 
 //*View Courses
 app.get("/users/courses", isAuthenticated, async (req, res) => {
-  let Courses = await Course.find({ published: true });
+  let Courses = await Course.find({ published: true }).populate("createdBy");
 
   res.send({ Courses });
 });
@@ -396,11 +396,11 @@ app.get("/users/purchasedCourses", isAuthenticated, async (req, res) => {
   res.send({ purchasedCourses: user.purchasedCourses || [] });
 });
 
-app.get("/admin/me", isAuthenticated, isAdmin, (req, res) => {
-  res.send({ username: req.data.username });
-});
+// app.get("/admin/me", isAuthenticated, isAdmin, (req, res) => {
+//   res.send({ username: req.data.username });
+// });
 
-app.get("/users/me", isAuthenticated, (req, res) => {
+app.get("/me", isAuthenticated, (req, res) => {
   res.send({ username: req.data.username });
 });
 
