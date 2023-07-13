@@ -3,8 +3,8 @@
 ### How to setup locally?
 
 After cloning, 
-inside Client, "npm install" and run "npm run dev"
-inside Server,delete node_modules , run "npm install" and "node index.js"
+- inside Client, "npm install" and run "npm run dev"
+- inside Server,delete node_modules , run "npm install" and "node index.js"
 
 ## Todos
 
