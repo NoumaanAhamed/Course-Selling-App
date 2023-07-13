@@ -8,6 +8,8 @@ After cloning,
 
 ## Todos
 
+- [ ] Create .env file for secrets.
+- [ ] Structure the code to MVC architecture.
 - [ ] Create same fallback route for users/admins when token is expired.
 - [ ] Make sure course creators can edit only their courses.
 - [ ] Improve Responsiveness for Certain devices
