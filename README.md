@@ -9,6 +9,8 @@ After cloning,
 ## Todos
 
 - [ ] Create .env file for secrets.
+- [ ] Ensure every file has only around 100 lines of code.
+- [ ] Structure Frontend code as well.
 - [ ] Structure the code to MVC architecture.
 - [ ] Create same fallback route for users/admins when token is expired.
 - [ ] Make sure course creators can edit only their courses.
