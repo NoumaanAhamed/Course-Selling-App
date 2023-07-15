@@ -225,10 +225,15 @@ app.put("/admin/courses/:id", isAuthenticated, isAdmin, async (req, res) => {
     return res.status(400).send({ message: "Course details missing" });
   }
 
-  let course = await Course.findById(id);
+  let course = await Course.findById(id).populate("createdBy");
 
   if (!course) {
     return res.status(404).send({ message: "Course doesn't exists" });
+  }
+
+  console.log(course.createdBy.username)
+  if (course.createdBy.username != req.data.username) {
+    return res.status(403).send({ message: "Only course creator can edit" });
   }
 
   course = await Course.findByIdAndUpdate(id, req.body, {
