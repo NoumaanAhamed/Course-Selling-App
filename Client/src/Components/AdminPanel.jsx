@@ -95,7 +95,7 @@ export default function Album() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setStatusMessage("Course Updated Successfully");
+        setStatusMessage(`${data.message}`);
         setSelectedCard(null);
         setEditFormData({
           title: "",
