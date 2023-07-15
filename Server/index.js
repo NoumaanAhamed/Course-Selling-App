@@ -231,7 +231,6 @@ app.put("/admin/courses/:id", isAuthenticated, isAdmin, async (req, res) => {
     return res.status(404).send({ message: "Course doesn't exists" });
   }
 
-  console.log(course.createdBy.username)
   if (course.createdBy.username != req.data.username) {
     return res.status(403).send({ message: "Only course creator can edit" });
   }
